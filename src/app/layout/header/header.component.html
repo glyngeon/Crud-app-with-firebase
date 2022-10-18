@@ -1,0 +1,21 @@
+<mat-toolbar color="primary">
+    <span (click)="homeNav()" class="home-button">
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+          <mat-icon>home</mat-icon>
+        </button>
+        <span>My App</span>
+    </span>
+    <span class="example-spacer"></span>
+    <ng-container *ngIf="authService.getUser();">
+        <mat-button-toggle-group class="toggle-menu-group" name="menu" aria-label="menu list">
+            <mat-button-toggle class="toggle-menu" *ngFor="let item of postLoginMenu; let i = index" [ngClass]="{'mat-button-toggle-checked': item?.isActive}" (click)="selectMenu(i)">
+                {{item?.name}}
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </ng-container>
+    <ng-container *ngIf="!authService.getUser()">
+        <mat-button-toggle-group class="toggle-menu-group" name="menu" aria-label="menu list">
+            <mat-button-toggle class="toggle-menu mat-button-toggle-checked" [routerLink]="'/signin'">SignIn</mat-button-toggle>
+        </mat-button-toggle-group>
+    </ng-container>
+</mat-toolbar>

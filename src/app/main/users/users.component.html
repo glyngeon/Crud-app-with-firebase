@@ -1,0 +1,147 @@
+<div class="container">
+    <h2>All Users List</h2>
+    <div class="users-header">
+        <!-- <div class="label">Users list</div> -->
+        <button mat-button color="primary" *ngIf="rowData?.length">Total: {{rowData.length}}</button>
+        <button mat-raised-button color="primary" (click)="addUser('new')" align="end" *ngIf="adminFlag">Add User</button>
+        <!-- <div class="sub-header" *ngIf="rowData?.length">Total: {{rowData.length}}</div> -->
+    </div>
+
+    <!-- table -->
+    <div class="table-container">
+        <div class="table">
+            <ag-grid-angular class="ag-theme-alpine ag-table" style="width: 100%; height: 500px;"
+                [rowData]="rowData"
+                [columnDefs]="columnDefs"
+                [sideBar]="sideBar"
+                [rowGroupPanelShow]="rowGroupPanelShow"
+                [pivotPanelShow]="pivotPanelShow"
+                (gridReady)="onGridReady($event)"
+                [pagination]="true" [paginationPageSize]="20"
+                [frameworkComponents]="frameworkComponents" [context]="context">
+            </ag-grid-angular>
+        </div>
+    </div>
+</div>
+
+
+ <!-- open dialog box for edit and add user  -->
+<ng-template #openEditUserDialog class="dialog-card">
+    <h2 mat-dialog-title>{{actionButton}}</h2>
+    <mat-dialog-content class="mat-typography dialog-container">
+        <form [formGroup]="userForm" (ngSubmit)="updateUser()">
+            <p>
+              <mat-form-field>
+                    <!-- <mat-icon matPrefix>person_outline</mat-icon> -->
+                    <input type="text" matInput placeholder="First Name" formControlName="fName" required>
+    
+                    <mat-error *ngIf="isFieldInvalid('fName')">
+                        Please enter your first name
+                    </mat-error>
+                </mat-form-field>
+            </p>
+    
+            <p>
+              <mat-form-field>
+                    <!-- <mat-icon matPrefix>person_outline</mat-icon> -->
+                    <input type="text" matInput placeholder="last Name" formControlName="lName" required>
+    
+                    <mat-error *ngIf="isFieldInvalid('lName')">
+                        Please enter your last name
+                    </mat-error>
+                </mat-form-field>
+            </p>
+    
+            <p>
+              <mat-form-field>
+                    <!-- <mat-icon matPrefix>person_outline</mat-icon> -->
+                    <input type="email" matInput placeholder="Email" formControlName="email" required>
+    
+                    <mat-error *ngIf="isFieldInvalid('email')">
+                        Please enter your email
+                    </mat-error>
+                    </mat-form-field>
+            </p>
+    
+            <p>
+              <mat-form-field>
+                    <!-- <mat-icon matPrefix>person_outline</mat-icon> -->
+                    <input matInput [matDatepicker]="picker" placeholder="Date of birth (MM/DD/YYYY)" formControlName="dob">
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="isFieldInvalid('dob')">
+                        Please enter your date of birth
+                    </mat-error>
+                    </mat-form-field>
+            </p>
+    
+            <p>
+              <mat-form-field>
+                    <!-- <mat-icon matPrefix>person_outline</mat-icon> -->
+                    <span matPrefix>+91 &nbsp;</span>
+                    <input type="tel" matInput placeholder="Phone number" formControlName="phone" required>
+    
+                    <mat-error *ngIf="isFieldInvalid('phone')">
+                        Please enter your phone number
+                    </mat-error>
+                    </mat-form-field>
+            </p>
+    
+            <p>
+              <!-- <mat-form-field> -->
+                    <!-- <mat-icon matPrefix>person_outline</mat-icon> -->
+                    <!-- <input type="radio" matInput placeholder="Username" formControlName="email" required> -->
+                    <label for="gender" class="gender-label">Gender</label>
+                    <mat-radio-group aria-label="Select an option" formControlName="gender">
+                        <mat-radio-button value="male">Male</mat-radio-button>
+                        <mat-radio-button value="female">Female</mat-radio-button>
+                        <mat-radio-button value="other">Other</mat-radio-button>
+                    </mat-radio-group>
+                    <mat-error *ngIf="isFieldInvalid('gender')">
+                        Please enter your gender
+                    </mat-error>
+                    <!-- </mat-form-field> -->
+            </p>
+    
+            <p>
+              <mat-form-field>
+                    <!-- <mat-icon matPrefix>lock_outline</mat-icon> -->
+                    <input type="password" matInput placeholder="Password" formControlName="password" required>
+                    <mat-error *ngIf="isFieldInvalid('password')">
+                        Please enter your password
+                    </mat-error>
+              </mat-form-field>
+            </p>
+    
+            <!-- <p *ngIf="error" class="error">
+              {{ error }}
+            </p> -->
+    
+            <!-- <div class="button">
+                <button mat-raised-button color="primary" type="submit">Register</button>
+            </div> -->
+            
+            <mat-dialog-actions align="end">
+                <button mat-button mat-dialog-close>Cancel</button>
+                <button mat-button [mat-dialog-close]="true" color="primary" type="submit" cdkFocusInitial>{{actionButton.split(' ')[0]}}</button>
+            </mat-dialog-actions>
+          </form>
+    </mat-dialog-content>
+</ng-template>
+
+
+ <!-- open dialog box for delete user  -->
+ <ng-template #openDeleteUserDialog class="dialog-card">
+    <h2 mat-dialog-title>Delete User</h2>
+    <mat-dialog-content class="mat-typography dialog-container">
+        Would you like to delete this user?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>No</button>
+        <button mat-button [mat-dialog-close]="true" color="primary" type="submit" cdkFocusInitial (click)="deleteUserCall()">Yes</button>
+    </mat-dialog-actions>
+</ng-template>
+
+
+

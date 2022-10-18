@@ -1,0 +1,160 @@
+
+
+
+<figure class="highcharts-figure">
+    <div class="chart-type" color="primary">
+        <mat-form-field>
+            <mat-label>Chart Type</mat-label>
+            <!-- line, spline, area, areaspline, column, bar, pie, scatter, gauge, arearange, areasplinerange -->
+            <mat-select [(ngModel)]="chartType" (ngModelChange)="changed($event)" name="chartType">
+                <mat-option value="bar">Bar</mat-option>
+                <mat-option value="line">Line</mat-option>
+                <mat-option value="spline">Spline</mat-option>
+                <mat-option value="area">Area</mat-option>
+                <mat-option value="column">Column</mat-option>
+                <mat-option value="pie">Pie</mat-option>
+                <mat-option value="gauge">Gauge</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div [chart]="charts"></div>
+    <p class="highcharts-description">
+        A basic column chart compares product category and product quantity.
+    </p>
+</figure>
+
+<div class="container">
+    <h2>All Products List</h2>
+    <div class="products-header">
+        <!-- <div class="label">Products list</div> -->
+        <button mat-button color="primary" *ngIf="rowData?.length">Total: {{rowData.length}}</button>
+        <button mat-raised-button color="primary" (click)="addProduct('new')" align="end" *ngIf="adminFlag">Add Product</button>
+        <!-- <div class="sub-header" *ngIf="rowData?.length">Total: {{rowData.length}}</div> -->
+    </div>
+
+    <!-- table -->
+    <div class="table-container">
+        <div class="table">
+            <ag-grid-angular class="ag-theme-alpine ag-table" style="width: 100%; height: 500px;"
+                [rowData]="rowData"
+                [columnDefs]="columnDefs"
+                [sideBar]="sideBar"
+                [rowGroupPanelShow]="rowGroupPanelShow"
+                [pivotPanelShow]="pivotPanelShow"
+                (gridReady)="onGridReady($event)"
+                [pagination]="true" [paginationPageSize]="20"
+                [frameworkComponents]="frameworkComponents" [context]="context">
+            </ag-grid-angular>
+        </div>
+    </div>
+</div>
+
+
+ <!-- open dialog box for edit and add product  -->
+<ng-template #openEditProductDialog class="dialog-card">
+    <h2 mat-dialog-title>{{actionButton}}</h2>
+    <mat-dialog-content class="mat-typography dialog-container">
+        <form [formGroup]="productForm" (ngSubmit)="updateProduct()">
+            <p>
+              <mat-form-field>
+                    <!-- <mat-icon matPrefix>person_outline</mat-icon> -->
+                    <input type="text" matInput placeholder="Product Name" formControlName="pName" required>
+        
+                    <mat-error *ngIf="isFieldInvalid('pName')">
+                        Please enter product name
+                    </mat-error>
+                </mat-form-field>
+            </p>
+        
+            <p>
+              <mat-form-field>
+                    <!-- <mat-icon matPrefix>person_outline</mat-icon> -->
+                    <input type="number" matInput placeholder="Quantity of Product" formControlName="quantity" required>
+        
+                    <mat-error *ngIf="isFieldInvalid('quantity')">
+                        Please enter quantity
+                    </mat-error>
+                </mat-form-field>
+            </p>
+        
+            <p>
+                <mat-form-field appearance="fill">
+                    <mat-label>Product Category</mat-label>
+                    <mat-select formControlName="category">
+                        <mat-option value="mobiles">Mobiles</mat-option>
+                        <mat-option value="grocery">Grocery</mat-option>
+                        <mat-option value="fashion">Fashion</mat-option>
+                        <mat-option value="electronics">Electronics</mat-option>
+                        <mat-option value="home">Home</mat-option>
+                        <mat-option value="beauty">Beauty</mat-option>
+                        <mat-option value="application">Application</mat-option>
+                        <mat-option value="sports">Sports</mat-option>
+                    </mat-select>
+                </mat-form-field>
+    
+                <mat-error *ngIf="isFieldInvalid('category')">
+                    Please select category
+                </mat-error>
+            </p>
+        
+            <p>
+              <mat-form-field>
+                    <input matInput [matDatepicker]="picker" placeholder="Date (MM/DD/YYYY)" formControlName="date">
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                        <mat-error *ngIf="isFieldInvalid('date')">
+                            Please enter date 
+                        </mat-error>
+                    </mat-form-field>
+            </p>
+        
+            <p>
+                <label for="freshness" class="gender-label">Freshness</label>
+                <mat-radio-group aria-label="Select an option" formControlName="freshness">
+                    <mat-radio-button value="new">New</mat-radio-button>
+                    <mat-radio-button value="old">Old</mat-radio-button>
+                </mat-radio-group>
+                <mat-error *ngIf="isFieldInvalid('freshness')">
+                    Please select option
+                </mat-error>
+            </p>
+        
+            <p>
+              <mat-form-field>
+                    <input type="number" matInput placeholder="Price" formControlName="price" required>
+                    <mat-error *ngIf="isFieldInvalid('price')">
+                        Please enter your price
+                    </mat-error>
+              </mat-form-field>
+            </p>
+
+            <p>
+              <mat-form-field>
+                    <input type="text" matInput placeholder="Comments" formControlName="comment" required>
+                    <mat-error *ngIf="isFieldInvalid('comment')">
+                        Please enter your comment
+                    </mat-error>
+              </mat-form-field>
+            </p>
+            
+            <mat-dialog-actions align="end">
+                <button mat-button mat-dialog-close>Cancel</button>
+                <button mat-button [mat-dialog-close]="true" color="primary" type="submit" cdkFocusInitial>{{actionButton.split(' ')[0]}}</button>
+            </mat-dialog-actions>
+          </form>
+    </mat-dialog-content>
+</ng-template>
+
+
+ <!-- open dialog box for delete product  -->
+ <ng-template #openDeleteProductDialog class="dialog-card">
+    <h2 mat-dialog-title>Delete Product</h2>
+    <mat-dialog-content class="mat-typography dialog-container">
+        Would you like to delete this product?
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>No</button>
+        <button mat-button [mat-dialog-close]="true" color="primary" type="submit" cdkFocusInitial (click)="deleteProductCall()">Yes</button>
+    </mat-dialog-actions>
+</ng-template>

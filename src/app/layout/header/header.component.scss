@@ -1,0 +1,23 @@
+.example-spacer {
+    flex: 1 1 auto;
+  }
+
+.toggle-menu-group {
+    margin: 0 1rem 0 0;
+    font-size: 1rem;
+    color: transparent !important;
+    border: none;
+    .toggle-menu {
+        background-color: transparent;
+        color: #fff;
+        border: none;
+    }
+    .mat-button-toggle-checked {
+        // background-color: #e0e0e0 !important;
+        // color: rgba(0,0,0,.54) !important;
+        border-bottom: 2px solid;
+    }
+}
+.home-button {
+    cursor: pointer;
+}
